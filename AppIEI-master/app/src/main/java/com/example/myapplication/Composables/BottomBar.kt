@@ -22,11 +22,15 @@ fun BottomBar(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Home", fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { navController.navigate("principal") })
+                modifier = Modifier.clickable { navController.navigate("Principal") })
             Text("Programar Alarmas", fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { navController.navigate("programar") })
+                modifier = Modifier.clickable { navController.navigate("Programar") })
             Text("Sonidos", fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { navController.navigate("sonidos") })
+                modifier = Modifier.clickable { navController.navigate("Sonidos") })
+            Text("Estado Hogar", fontSize = 16.sp, fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { navController.navigate("Estado Hogar") })
+            Text("Notificaciones", fontSize = 16.sp, fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { navController.navigate("Notificaciones") })
         }
     }
 }
