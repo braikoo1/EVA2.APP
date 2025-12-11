@@ -27,8 +27,6 @@ fun BottomBar(navController: NavHostController) {
                 modifier = Modifier.clickable { navController.navigate("Programar") })
             Text("Sonidos", fontSize = 16.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable { navController.navigate("Sonidos") })
-            Text("Estado Hogar", fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { navController.navigate("Estado Hogar") })
             Text("Notificaciones", fontSize = 16.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable { navController.navigate("Notificaciones") })
         }

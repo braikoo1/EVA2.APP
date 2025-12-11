@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.Composables.BottomBar
 import com.example.firebaseapp.FirebaseManager
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ProgramarScreen(navController: NavHostController) {
@@ -29,9 +32,22 @@ fun ProgramarScreen(navController: NavHostController) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
+    fun notificar(mensaje: String, abierta: Boolean = false) {
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val hora = sdf.format(Date())
+        val id = System.currentTimeMillis().toString()
+
+        FirebaseManager.escribirFirebase(
+            "notificaciones/$id",
+            "$mensaje|$hora|$abierta"
+        )
+    }
+
     val pickerInicio = TimePickerDialog(
         context,
-        { _: TimePicker, h, m -> horaInicio = String.format("%02d:%02d", h, m) },
+        { _: TimePicker, h, m ->
+            horaInicio = String.format("%02d:%02d", h, m)
+        },
         calendar.get(Calendar.HOUR_OF_DAY),
         calendar.get(Calendar.MINUTE),
         true
@@ -39,7 +55,9 @@ fun ProgramarScreen(navController: NavHostController) {
 
     val pickerFin = TimePickerDialog(
         context,
-        { _: TimePicker, h, m -> horaFin = String.format("%02d:%02d", h, m) },
+        { _: TimePicker, h, m ->
+            horaFin = String.format("%02d:%02d", h, m)
+        },
         calendar.get(Calendar.HOUR_OF_DAY),
         calendar.get(Calendar.MINUTE),
         true
@@ -78,7 +96,11 @@ fun ProgramarScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
-                Text("Seleccionar hora de activación: $horaInicio", color = Color.White, fontSize = 18.sp)
+                Text(
+                    "Seleccionar hora de activación: $horaInicio",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
             }
 
             Spacer(Modifier.height(10.dp))
@@ -88,7 +110,11 @@ fun ProgramarScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
-                Text("Seleccionar hora de desactivación: $horaFin", color = Color.White, fontSize = 18.sp)
+                Text(
+                    "Seleccionar hora de desactivación: $horaFin",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
             }
 
             Spacer(Modifier.height(14.dp))
@@ -97,6 +123,7 @@ fun ProgramarScreen(navController: NavHostController) {
                 onClick = {
                     horarioGuardado = "$horaInicio - $horaFin"
                     FirebaseManager.escribirFirebase("horario", horarioGuardado)
+                    notificar("Horario programado: $horarioGuardado")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
@@ -127,6 +154,7 @@ fun ProgramarScreen(navController: NavHostController) {
                 onClick = {
                     distanciaGuardada = distancia
                     FirebaseManager.escribirFirebase("distancia", distanciaGuardada.toInt())
+                    notificar("Distancia de detección establecida: ${distanciaGuardada.toInt()} cm")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black)

@@ -13,11 +13,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.Composables.BottomBar
 import com.example.firebaseapp.FirebaseManager
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun SonidosScreen(navController: NavHostController) {
     var sonidoSeleccionado by rememberSaveable { mutableStateOf(1) }
     var modoSilencioso by rememberSaveable { mutableStateOf(false) }
+
+    fun notificar(mensaje: String, abierta: Boolean = false) {
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val hora = sdf.format(Date())
+        val id = System.currentTimeMillis().toString()
+
+        FirebaseManager.escribirFirebase(
+            "notificaciones/$id",
+            "$mensaje|$hora|$abierta"
+        )
+    }
 
     LaunchedEffect(Unit) {
         FirebaseManager.leerFirebase("sonido") { valor ->
@@ -53,6 +67,7 @@ fun SonidosScreen(navController: NavHostController) {
                         onClick = {
                             sonidoSeleccionado = i
                             FirebaseManager.escribirFirebase("sonido", i)
+                            notificar("Sonido $i seleccionado")
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.weight(1f),
@@ -82,6 +97,7 @@ fun SonidosScreen(navController: NavHostController) {
                     onClick = {
                         modoSilencioso = true
                         FirebaseManager.escribirFirebase("silencio", true)
+                        notificar("Modo silencioso activado", abierta = true)
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
@@ -93,6 +109,7 @@ fun SonidosScreen(navController: NavHostController) {
                     onClick = {
                         modoSilencioso = false
                         FirebaseManager.escribirFirebase("silencio", false)
+                        notificar("Modo silencioso desactivado", abierta = false)
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828))
