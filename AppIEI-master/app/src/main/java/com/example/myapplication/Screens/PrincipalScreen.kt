@@ -26,9 +26,15 @@ fun PrincipalScreen(navController: NavHostController) {
     var puertaTraseraAbierta by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        FirebaseManager.leerFirebase("alarma") { if (it.isNotEmpty()) alarmaActiva = it == "true" }
-        FirebaseManager.leerFirebase("puertaPrincipal") { if (it.isNotEmpty()) puertaPrincipalAbierta = it == "true" }
-        FirebaseManager.leerFirebase("puertaTrasera") { if (it.isNotEmpty()) puertaTraseraAbierta = it == "true" }
+        FirebaseManager.listenFirebase("alarma") { value ->
+            alarmaActiva = value == "true"
+        }
+        FirebaseManager.listenFirebase("puertaPrincipal") { value ->
+            puertaPrincipalAbierta = value == "true"
+        }
+        FirebaseManager.listenFirebase("puertaTrasera") { value ->
+            puertaTraseraAbierta = value == "true"
+        }
     }
 
     fun guardarEstado() {
@@ -41,33 +47,24 @@ fun PrincipalScreen(navController: NavHostController) {
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         val hora = sdf.format(Date())
         val id = System.currentTimeMillis().toString()
-
-        FirebaseManager.escribirFirebase(
-            "notificaciones/$id",
-            "$mensaje|$hora|$abierta"
-        )
+        FirebaseManager.escribirFirebase("notificaciones/$id", "$mensaje|$hora|$abierta")
     }
 
     val todoCerrado = !puertaPrincipalAbierta && !puertaTraseraAbierta
 
-    Scaffold(
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
+    Scaffold(bottomBar = { BottomBar(navController) }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(modifier = Modifier.height(20.dp))
             Text("Alarma de Casa", fontSize = 30.sp)
             Spacer(modifier = Modifier.height(20.dp))
             Text("Ultima activacion: 08:00", fontSize = 25.sp)
             Spacer(modifier = Modifier.height(30.dp))
-
             Text("Estado general del hogar", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
             Spacer(Modifier.height(20.dp))
 
             Row(
@@ -78,7 +75,6 @@ fun PrincipalScreen(navController: NavHostController) {
                     texto = if (todoCerrado) "Todo cerrado" else "Hay aperturas",
                     color = if (todoCerrado) Color(0xFF4CAF50) else Color(0xFFF44336)
                 )
-
                 EstadoCard(
                     texto = if (alarmaActiva) "Alarma activada" else "Alarma desactivada",
                     color = if (alarmaActiva) Color(0xFF4CAF50) else Color(0xFFF44336)
@@ -163,11 +159,10 @@ fun EstadoElemento(nombre: String, abierto: Boolean, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(nombre, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-
             Text(
                 if (abierto) "Abierta" else "Cerrada",
                 color = if (abierto) Color.Red else Color(0xFF4CAF50),
