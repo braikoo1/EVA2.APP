@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.firebaseapp.FirebaseLogin
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -54,7 +55,8 @@ fun LoginScreen(navController: NavHostController) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation() // <-- Aquí se oculta la contraseña
             )
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -114,4 +116,3 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 }
-
