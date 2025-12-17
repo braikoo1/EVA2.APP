@@ -62,7 +62,6 @@ fun PrincipalScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             Text("Alarma de Casa", fontSize = 30.sp)
             Spacer(modifier = Modifier.height(20.dp))
-            Text("Ultima activacion: 08:00", fontSize = 25.sp)
             Spacer(modifier = Modifier.height(30.dp))
             Text("Estado general del hogar", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(20.dp))
